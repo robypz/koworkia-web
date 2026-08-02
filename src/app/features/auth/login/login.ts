@@ -40,7 +40,7 @@ export class Login {
     this.auth.login(email, password).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigateByUrl(this.auth.isAdmin() ? '/dashboard' : '/bookings');
+        this.router.navigateByUrl(this.auth.isAdmin() ? '/dashboard' : '/');
       },
       error: () => {
         this.submitting.set(false);
