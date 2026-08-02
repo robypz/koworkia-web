@@ -3,27 +3,36 @@ import { User } from './user.model';
 
 export type BookingStatus = 'confirmed' | 'cancelled';
 
+/**
+ * Matches the real koworkia-api response. Note there is no `/availability`
+ * endpoint and `GET /bookings` doesn't eager-load `user`/`space` — those two
+ * fields are only ever populated by the (still hypothetical) `/dashboard`
+ * endpoint, never by the real bookings list.
+ */
 export interface Booking {
   id: number;
   user_id: number;
   space_id: number;
-  date: string;
-  start_hour: number;
+  start_date_time: string;
+  end_date_time: string;
   status: BookingStatus;
+  created_at: string;
+  updated_at: string;
   user?: User;
   space?: Space;
 }
 
 export interface CreateBookingPayload {
   space_id: number;
-  date: string;
-  start_hour: number;
+  status: BookingStatus;
+  start_date_time: string;
+  end_date_time: string;
 }
 
-export interface AvailabilitySlot {
-  start_hour: number;
-  status: 'free' | 'occupied';
-  booking?: Booking;
+export interface UpdateBookingPayload {
+  status?: BookingStatus;
+  start_date_time?: string;
+  end_date_time?: string;
 }
 
 export interface DashboardSummary {

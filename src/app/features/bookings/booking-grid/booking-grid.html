@@ -63,7 +63,7 @@
           }
         </div>
         <div class="grid min-w-[840px] grid-cols-12">
-          @for (slot of slots(); track slot.start_hour) {
+          @for (slot of slots(); track slot.hour) {
             <div class="h-20 border-r border-surface-variant p-1 last:border-r-0">
               @if (slot.status === 'free') {
                 <button

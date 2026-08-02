@@ -17,6 +17,7 @@ describe('AuthService', () => {
     phone: null,
     plan_id: null,
     status: 'active',
+    company_id: null,
   };
 
   beforeEach(() => {

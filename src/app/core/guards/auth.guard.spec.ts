@@ -18,6 +18,7 @@ const storeSession = (role: RoleName): void => {
       phone: null,
       plan_id: null,
       status: 'active',
+      company_id: null,
     } satisfies User),
   );
 };

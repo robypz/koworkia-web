@@ -1,6 +1,7 @@
 import { Component, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SPACE_TYPE_LABELS, Space, SpacePayload, SpaceType } from '../../../core/models/space.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { Modal } from '../../../shared/ui/modal/modal';
 
 @Component({
@@ -16,6 +17,7 @@ export class SpaceForm {
   readonly cancel = output<void>();
 
   private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
 
   protected readonly typeOptions: { value: SpaceType; label: string }[] = (
     Object.entries(SPACE_TYPE_LABELS) as [SpaceType, string][]
@@ -25,7 +27,6 @@ export class SpaceForm {
     name: ['', Validators.required],
     type: ['meeting_room' as SpaceType, Validators.required],
     capacity: [1, [Validators.required, Validators.min(1)]],
-    is_active: [true],
   });
 
   constructor() {
@@ -36,10 +37,9 @@ export class SpaceForm {
           name: current.name,
           type: current.type,
           capacity: current.capacity,
-          is_active: current.is_active,
         });
       } else {
-        this.form.reset({ name: '', type: 'meeting_room', capacity: 1, is_active: true });
+        this.form.reset({ name: '', type: 'meeting_room', capacity: 1 });
       }
     });
   }
@@ -49,6 +49,6 @@ export class SpaceForm {
       this.form.markAllAsTouched();
       return;
     }
-    this.save.emit(this.form.getRawValue());
+    this.save.emit({ ...this.form.getRawValue(), company_id: this.auth.user()?.company_id ?? null });
   }
 }

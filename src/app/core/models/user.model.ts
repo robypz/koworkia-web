@@ -18,6 +18,7 @@ export interface User {
   plan_id: number | null;
   plan?: Plan | null;
   status: UserStatus;
+  company_id: number | null;
 }
 
 export interface CreateMemberPayload {

@@ -51,7 +51,8 @@
               <div>
                 <h4 class="text-sm font-semibold text-on-surface">{{ booking.space?.name }}</h4>
                 <p class="mt-1 text-xs text-text-secondary">
-                  {{ booking.start_hour }}:00 - {{ booking.start_hour + 1 }}:00 · {{ booking.date }}
+                  {{ booking.start_date_time | date: 'HH:mm' }} - {{ booking.end_date_time | date: 'HH:mm' }} ·
+                  {{ booking.start_date_time | date: 'd MMM' }}
                 </p>
               </div>
               <div class="flex items-center gap-3">
