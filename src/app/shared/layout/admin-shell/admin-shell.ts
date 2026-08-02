@@ -19,7 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/dashboard', roles: ['root', 'admin'] },
   { label: 'Puestos', icon: 'chair_alt', path: '/spaces', roles: ['root', 'admin'] },
   { label: 'Reservas', icon: 'calendar_today', path: '/bookings' },
-  { label: 'Miembros', icon: 'group', path: '/members', roles: ['root', 'admin'] },
+  { label: 'Miembros', icon: 'group', path: '/members', roles: ['root'] },
 ];
 
 const TITLES: { prefix: string; title: string }[] = [

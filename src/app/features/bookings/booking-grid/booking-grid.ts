@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
+import { Datepicker } from 'flowbite';
 import { Booking } from '../../../core/models/booking.model';
 import { Space } from '../../../core/models/space.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -18,12 +19,20 @@ interface HourSlot {
   standalone: true,
   templateUrl: './booking-grid.html',
 })
-export class BookingGrid implements OnInit {
+export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
   private readonly bookingsService = inject(BookingsService);
   private readonly spacesService = inject(SpacesService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly notifications = inject(NotificationService);
   private readonly auth = inject(AuthService);
+
+  @ViewChild('dateInput', { static: true })
+  private readonly dateInputRef!: ElementRef<HTMLInputElement>;
+
+  private datepicker?: Datepicker;
+  private readonly onDatepickerChange = (event: Event): void => {
+    this.onDateChange((event.target as HTMLInputElement).value);
+  };
 
   protected readonly hours = Array.from({ length: 12 }, (_, i) => i + 8);
 
@@ -62,15 +71,49 @@ export class BookingGrid implements OnInit {
     });
   });
 
+  constructor() {
+    /** Keeps the flowbite picker's displayed date in sync with programmatic changes (goToday, shiftDay, initial nearest-booking date). */
+    effect(() => {
+      const value = this.date();
+      this.datepicker?.setDate(value);
+    });
+  }
+
+  ngAfterViewInit(): void {
+    const input = this.dateInputRef.nativeElement;
+    this.datepicker = new Datepicker(input, { autohide: true, format: 'yyyy-mm-dd' });
+    this.datepicker.setDate(this.date());
+    input.addEventListener('changeDate', this.onDatepickerChange);
+  }
+
+  ngOnDestroy(): void {
+    this.dateInputRef.nativeElement.removeEventListener('changeDate', this.onDatepickerChange);
+    this.datepicker?.destroy();
+  }
+
   ngOnInit(): void {
+    let spacesLoaded = false;
+    let bookingsLoaded = false;
+    const trySetInitialDate = () => {
+      if (spacesLoaded && bookingsLoaded) {
+        this.setInitialDate();
+      }
+    };
+
     this.spacesService.list().subscribe((spaces) => {
       const active = spaces.filter((space) => space.is_active);
       this.spaces.set(active);
       if (active.length > 0) {
         this.spaceId.set(active[0].id);
       }
+      spacesLoaded = true;
+      trySetInitialDate();
     });
-    this.loadBookings();
+
+    this.loadBookings(() => {
+      bookingsLoaded = true;
+      trySetInitialDate();
+    });
   }
 
   protected onDateChange(value: string): void {
@@ -151,18 +194,45 @@ export class BookingGrid implements OnInit {
     }
   }
 
-  private loadBookings(): void {
+  private loadBookings(onComplete?: () => void): void {
     this.loading.set(true);
     this.bookingsService.listAll().subscribe({
       next: (bookings) => {
         this.bookings.set(bookings);
         this.loading.set(false);
+        onComplete?.();
       },
       error: () => {
         this.notifications.error('No se pudieron cargar las reservas.');
         this.loading.set(false);
       },
     });
+  }
+
+  /**
+   * On first load the grid defaults to today, which is usually empty. Instead,
+   * jump to whichever date (past or future) has a confirmed booking for the
+   * selected space closest to today, so the initial view isn't blank.
+   */
+  private setInitialDate(): void {
+    const spaceId = this.spaceId();
+    const relevant = this.bookings().filter(
+      (b) => b.status === 'confirmed' && b.space_id === spaceId,
+    );
+    if (relevant.length === 0) return;
+
+    const today = new Date(`${this.formatDate(new Date())}T00:00:00Z`).getTime();
+    let closestDate = this.date();
+    let closestDiff = Infinity;
+    for (const booking of relevant) {
+      const bookingDate = this.formatDate(new Date(booking.start_date_time));
+      const diff = Math.abs(new Date(`${bookingDate}T00:00:00Z`).getTime() - today);
+      if (diff < closestDiff) {
+        closestDiff = diff;
+        closestDate = bookingDate;
+      }
+    }
+    this.date.set(closestDate);
   }
 
   /** Slot boundaries are treated as UTC instants so client/server round-trip consistently. */
