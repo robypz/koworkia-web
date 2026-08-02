@@ -22,11 +22,18 @@ export interface Booking {
   space?: Space;
 }
 
+/**
+ * The API now books on behalf of another platform user instead of always
+ * defaulting to the authenticated caller: send exactly one of `user_id` or
+ * `email` (never both), and it resolves the booking's owner from that.
+ */
 export interface CreateBookingPayload {
   space_id: number;
   status: BookingStatus;
   start_date_time: string;
   end_date_time: string;
+  user_id?: number;
+  email?: string;
 }
 
 export interface UpdateBookingPayload {

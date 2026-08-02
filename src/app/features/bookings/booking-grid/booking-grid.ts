@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Datepicker } from 'flowbite';
@@ -46,6 +47,12 @@ export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
   protected readonly date = signal(this.formatDate(new Date()));
   protected readonly spaceId = signal<number | null>(null);
   protected readonly loading = signal(false);
+
+  /** Drives the "book on behalf of a user" modal; booking is no longer self-service. */
+  protected readonly emailModalSlot = signal<HourSlot | null>(null);
+  protected readonly emailInput = signal('');
+  protected readonly emailModalError = signal<string | null>(null);
+  protected readonly submitting = signal(false);
 
   private readonly currentUserId = computed(() => this.auth.user()?.id ?? null);
 
@@ -154,32 +161,12 @@ export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
   }
 
   protected async onSlotClick(slot: HourSlot): Promise<void> {
-    const spaceId = this.spaceId();
-    if (!spaceId) return;
+    if (!this.spaceId()) return;
 
     if (slot.status === 'free') {
-      const confirmed = await this.confirmDialog.confirm({
-        title: 'Reservar franja',
-        message: `¿Reservar de ${slot.hour}:00 a ${slot.hour + 1}:00?`,
-        confirmText: 'Reservar',
-      });
-      if (!confirmed) return;
-
-      const { start, end } = this.slotBounds(this.date(), slot.hour);
-      this.bookingsService
-        .create({ space_id: spaceId, status: 'confirmed', start_date_time: start, end_date_time: end })
-        .subscribe({
-          next: (booking) => {
-            this.notifications[booking ? 'success' : 'error'](
-              booking ? 'Reserva confirmada.' : 'Esa franja acaba de ocuparse.',
-            );
-            this.loadBookings();
-          },
-          error: () => {
-            this.notifications.error('No se pudo crear la reserva.');
-            this.loadBookings();
-          },
-        });
+      this.emailModalSlot.set(slot);
+      this.emailInput.set('');
+      this.emailModalError.set(null);
       return;
     }
 
@@ -200,6 +187,53 @@ export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
         error: () => this.notifications.error('No se pudo cancelar la reserva.'),
       });
     }
+  }
+
+  protected onEmailInputChange(value: string): void {
+    this.emailInput.set(value);
+    this.emailModalError.set(null);
+  }
+
+  protected closeEmailModal(): void {
+    if (this.submitting()) return;
+    this.emailModalSlot.set(null);
+  }
+
+  protected confirmBookingByEmail(): void {
+    const slot = this.emailModalSlot();
+    const spaceId = this.spaceId();
+    if (!slot || !spaceId) return;
+
+    const email = this.emailInput().trim();
+    if (!this.isValidEmail(email)) {
+      this.emailModalError.set('Ingresa un correo electrónico válido.');
+      return;
+    }
+
+    const { start, end } = this.slotBounds(this.date(), slot.hour);
+    this.submitting.set(true);
+    this.bookingsService
+      .create({ space_id: spaceId, status: 'confirmed', start_date_time: start, end_date_time: end, email })
+      .subscribe({
+        next: (booking) => {
+          this.submitting.set(false);
+          if (booking) {
+            this.notifications.success('Reserva confirmada.');
+            this.emailModalSlot.set(null);
+          } else {
+            this.emailModalError.set('Esa franja acaba de ocuparse.');
+          }
+          this.loadBookings();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.emailModalError.set(err.error?.message ?? 'No se pudo crear la reserva. Verifica el correo electrónico.');
+        },
+      });
+  }
+
+  private isValidEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
   private loadBookings(onComplete?: () => void): void {
