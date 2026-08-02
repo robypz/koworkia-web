@@ -4,13 +4,18 @@
     <div class="flex flex-wrap items-end gap-4">
       <div>
         <label class="mb-1 block text-xs font-medium text-text-secondary" for="date">Fecha</label>
-        <input
-          id="date"
-          type="date"
-          [value]="date()"
-          (change)="onDateChange($any($event.target).value)"
-          class="rounded-lg border border-surface-variant bg-white px-3 py-2 text-sm font-medium text-text-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-        />
+        <div class="relative">
+          <span class="material-symbols-outlined pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-text-secondary">
+            calendar_month
+          </span>
+          <input
+            #dateInput
+            id="date"
+            type="text"
+            autocomplete="off"
+            class="w-36 rounded-lg border border-surface-variant bg-white py-2 pr-3 pl-9 text-sm font-medium text-text-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+          />
+        </div>
       </div>
       <div>
         <label class="mb-1 block text-xs font-medium text-text-secondary" for="space">Espacio</label>
@@ -63,7 +68,7 @@
           }
         </div>
         <div class="grid min-w-[840px] grid-cols-12">
-          @for (slot of slots(); track slot.start_hour) {
+          @for (slot of slots(); track slot.hour) {
             <div class="h-20 border-r border-surface-variant p-1 last:border-r-0">
               @if (slot.status === 'free') {
                 <button
@@ -105,3 +110,49 @@
     </div>
   </div>
 </div>
+
+<!-- Book-on-behalf-of modal -->
+@if (emailModalSlot(); as slot) {
+  <div class="fixed inset-0 z-[90] flex items-center justify-center bg-on-surface/40 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-sm rounded-xl bg-surface-container-lowest p-6 shadow-md">
+      <h2 class="font-display text-lg font-semibold text-on-surface">Reservar franja</h2>
+      <p class="mt-2 text-sm text-on-surface-variant">
+        Ingresa el correo electrónico del usuario para el que deseas reservar de {{ slot.hour }}:00 a {{ slot.hour + 1 }}:00.
+      </p>
+      <div class="mt-4">
+        <label class="mb-1 block text-xs font-medium text-text-secondary" for="booking-email">Correo electrónico</label>
+        <input
+          id="booking-email"
+          type="email"
+          autocomplete="off"
+          [value]="emailInput()"
+          (input)="onEmailInputChange($any($event.target).value)"
+          (keydown.enter)="confirmBookingByEmail()"
+          placeholder="usuario@ejemplo.com"
+          class="w-full rounded-lg border border-surface-variant bg-white px-3 py-2 text-sm text-text-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+        />
+        @if (emailModalError(); as error) {
+          <p class="mt-1.5 text-xs text-error">{{ error }}</p>
+        }
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          class="rounded-lg border border-outline px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-variant"
+          [disabled]="submitting()"
+          (click)="closeEmailModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          [disabled]="submitting()"
+          class="rounded-lg bg-primary-container px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-container/90 disabled:opacity-60"
+          (click)="confirmBookingByEmail()"
+        >
+          {{ submitting() ? 'Reservando…' : 'Reservar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

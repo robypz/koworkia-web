@@ -19,7 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', path: '/dashboard', roles: ['root', 'admin'] },
   { label: 'Puestos', icon: 'chair_alt', path: '/spaces', roles: ['root', 'admin'] },
   { label: 'Reservas', icon: 'calendar_today', path: '/bookings' },
-  { label: 'Miembros', icon: 'group', path: '/members', roles: ['root', 'admin'] },
+  { label: 'Miembros', icon: 'group', path: '/members', roles: ['root'] },
 ];
 
 const TITLES: { prefix: string; title: string }[] = [
@@ -27,6 +27,7 @@ const TITLES: { prefix: string; title: string }[] = [
   { prefix: '/spaces', title: 'Gestión de Espacios' },
   { prefix: '/members', title: 'Gestión de Miembros' },
   { prefix: '/bookings', title: 'Reservas' },
+  { prefix: '/empresas', title: 'Perfil de la empresa' },
 ];
 
 @Component({

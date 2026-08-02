@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Koworkia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Sora:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e1e2ed",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary": "#004ac6",
+                        "secondary-fixed-dim": "#b6c4ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary": "#943700",
+                        "on-tertiary-fixed": "#360f00",
+                        "inverse-surface": "#2e3039",
+                        "surface-bright": "#faf8ff",
+                        "success": "#10B981",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "surface": "#faf8ff",
+                        "secondary-container": "#8fa7fe",
+                        "inverse-primary": "#b4c5ff",
+                        "bg-surface": "#F1F5F9",
+                        "background": "#faf8ff",
+                        "surface-tint": "#0053db",
+                        "surface-container-low": "#f3f3fe",
+                        "secondary": "#4059aa",
+                        "text-secondary": "#6B7280",
+                        "error": "#EF4444",
+                        "surface-container-highest": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-secondary-fixed": "#00164e",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#dce1ff",
+                        "outline": "#737686",
+                        "surface-container-high": "#e7e7f3",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-dim": "#d9d9e5",
+                        "on-primary-fixed": "#00174b",
+                        "primary-container": "#2563eb",
+                        "on-secondary-fixed-variant": "#264191",
+                        "on-secondary-container": "#1d3989",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-lowest": "#ffffff",
+                        "text-primary": "#111827"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "1rem",
+                        "xl": "2rem",
+                        "xs": "0.25rem",
+                        "sm": "0.5rem",
+                        "base": "4px",
+                        "lg": "1.5rem",
+                        "margin-desktop": "2rem",
+                        "margin-mobile": "1rem",
+                        "gutter": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Sora"],
+                        "headline-sm": ["Sora"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F1F5F9; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Sora', sans-serif; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-primary">
+<!-- SideNavBar -->
+<aside class="bg-on-surface dark:bg-surface-container-lowest fixed left-0 top-0 h-full w-[260px] shadow-md dark:border-r dark:border-outline-variant flex flex-col py-6 z-20 hidden md:flex text-on-secondary">
+<div class="px-6 mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined text-4xl text-primary-container" style="font-variation-settings: 'FILL' 1;">crop_free</span>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-surface dark:text-on-surface tracking-tight">Koworkia</h1>
+<p class="font-label-md text-[10px] text-surface-variant tracking-widest mt-1 opacity-80 uppercase">Manage. Connect. Grow.</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2 px-4">
+<a class="bg-primary-container text-on-primary-container rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">chair_alt</span>
+<span class="font-label-md text-label-md">Puestos</span>
+</a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Reservas</span>
+</a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Miembros</span>
+</a>
+</nav>
+<div class="mt-auto px-4 flex flex-col gap-2">
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">pie_chart</span>
+<span class="font-label-md text-label-md">Reportes</span>
+</a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Ajustes</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col md:ml-[260px] w-full h-full">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-surface docked full-width top-0 h-16 border-b border-surface-variant dark:border-outline-variant flex justify-between items-center px-8 z-10 w-full">
+<h2 class="font-headline-sm text-headline-sm text-primary dark:text-primary-fixed">Dashboard</h2>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="flex items-center gap-3 ml-4 border-l border-surface-variant pl-4">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-primary font-semibold">Admin</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8">
+<div class="max-w-7xl mx-auto space-y-6">
+<!-- Top Metrics Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Puestos Ocupados -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_6px_-1px_rgb(0,0,0,0.05)] border border-surface-variant/50">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-md text-label-md text-text-secondary uppercase">Puestos ocupados</h3>
+<span class="material-symbols-outlined text-text-secondary">chair_alt</span>
+</div>
+<div class="flex items-end gap-3">
+<div class="font-headline-lg text-headline-lg text-primary tracking-tight">32</div>
+<div class="font-body-md text-body-md text-text-secondary pb-1">/ 60</div>
+</div>
+<div class="mt-4 w-full bg-surface-container-high rounded-full h-1.5">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 53%"></div>
+</div>
+<p class="font-label-md text-xs text-right mt-2 text-text-secondary">53%</p>
+</div>
+<!-- Reservas hoy -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_6px_-1px_rgb(0,0,0,0.05)] border border-surface-variant/50">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-md text-label-md text-text-secondary uppercase">Reservas hoy</h3>
+<span class="material-symbols-outlined text-text-secondary">calendar_today</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="font-headline-lg text-headline-lg text-primary tracking-tight">14</div>
+<div class="flex items-center gap-1 text-success bg-success/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-md text-[11px]">+12%</span>
+</div>
+</div>
+</div>
+<!-- Miembros activos -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_6px_-1px_rgb(0,0,0,0.05)] border border-surface-variant/50">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-label-md text-label-md text-text-secondary uppercase">Miembros activos</h3>
+<span class="material-symbols-outlined text-text-secondary">group</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="font-headline-lg text-headline-lg text-primary tracking-tight">128</div>
+<div class="flex items-center gap-1 text-success bg-success/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="font-label-md text-[11px]">+8%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Próximas reservas (List) -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_6px_-1px_rgb(0,0,0,0.05)] border border-surface-variant/50 lg:col-span-1">
+<h3 class="font-headline-sm text-headline-sm mb-6 text-primary">Próximas reservas</h3>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant">
+<div>
+<h4 class="font-body-md text-body-md font-semibold">Sala de reuniones</h4>
+<p class="font-label-md text-xs text-text-secondary mt-1">10:00 - 11:00</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-md text-sm text-text-secondary">Ana García</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container text-xs font-bold">AG</div>
+</div>
+</div>
+<hr class="border-surface-variant/50"/>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant">
+<div>
+<h4 class="font-body-md text-body-md font-semibold">Puesto 12</h4>
+<p class="font-label-md text-xs text-text-secondary mt-1">11:00 - 12:00</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-md text-sm text-text-secondary">Carlos Ruiz</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container text-xs font-bold">CR</div>
+</div>
+</div>
+<hr class="border-surface-variant/50"/>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-variant">
+<div>
+<h4 class="font-body-md text-body-md font-semibold">Puesto 04</h4>
+<p class="font-label-md text-xs text-text-secondary mt-1">12:30 - 14:00</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-body-md text-sm text-text-secondary">Elena Ríos</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container text-xs font-bold">ER</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-surface-variant rounded-md text-sm font-medium text-primary hover:bg-surface-container-low transition-colors">Ver todas</button>
+</div>
+<!-- Ocupación semanal (Chart) -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_6px_-1px_rgb(0,0,0,0.05)] border border-surface-variant/50 lg:col-span-2 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm text-primary">Ocupación semanal</h3>
+<select class="bg-surface border-surface-variant text-sm rounded-md text-text-secondary focus:ring-primary-container focus:border-primary-container">
+<option>Esta semana</option>
+<option>Semana pasada</option>
+</select>
+</div>
+<div class="flex-1 relative min-h-[250px]">
+<canvas id="occupancyChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (Hidden on md+) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface dark:bg-surface-container border-t border-surface-variant z-50 flex justify-around py-3">
+<a class="flex flex-col items-center text-primary" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-[10px]">Inicio</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">chair_alt</span>
+<span class="font-label-md text-[10px]">Puestos</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-label-md text-[10px]">Reservas</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">group</span>
+<span class="font-label-md text-[10px]">Miembros</span>
+</a>
+</nav>
+<script>
+        // Chart.js Configuration for 'Ocupación semanal'
+        const ctx = document.getElementById('occupancyChart').getContext('2d');
+        
+        // Gradient for line fill
+        let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)'); // tailwind primary-container with opacity
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+
+        const occupancyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                datasets: [{
+                    label: 'Ocupación (%)',
+                    data: [45, 52, 60, 58, 48, 20, 15],
+                    borderColor: '#2563eb', // primary-container
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#2563eb',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4 // smooth curves
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#191b23',
+                        padding: 12,
+                        titleFont: { family: 'Inter', size: 13 },
+                        bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '% ocupado';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#F1F5F9', // light grid lines
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 12 },
+                            color: '#6B7280',
+                            stepSize: 20
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 12 },
+                            color: '#6B7280'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            }
+        });
+    </script>
+</body></html>

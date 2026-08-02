@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiCollection, ApiResource } from '../../core/models/api.model';
+import { ApiResource, LaravelPage } from '../../core/models/api.model';
 import { Space, SpacePayload } from '../../core/models/space.model';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,13 @@ export class SpacesService {
   private readonly base = `${environment.apiUrl}/spaces`;
 
   list(): Observable<Space[]> {
-    return this.http.get<ApiCollection<Space>>(this.base).pipe(map((res) => res.data));
+    return this.http.get<LaravelPage<Space>>(this.base).pipe(map((res) => res.data));
+  }
+
+  listByCompany(companyId: number): Observable<Space[]> {
+    return this.http
+      .get<LaravelPage<Space>>(`${this.base}/byCompany/${companyId}`)
+      .pipe(map((res) => res.data));
   }
 
   create(payload: SpacePayload): Observable<Space> {
@@ -20,9 +26,5 @@ export class SpacesService {
 
   update(id: number, payload: SpacePayload): Observable<Space> {
     return this.http.put<ApiResource<Space>>(`${this.base}/${id}`, payload).pipe(map((res) => res.data));
-  }
-
-  deactivate(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.base}/${id}`);
   }
 }

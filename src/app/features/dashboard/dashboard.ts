@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { DashboardSummary } from '../../core/models/booking.model';
 import { DashboardService } from './dashboard.service';
@@ -5,6 +6,7 @@ import { DashboardService } from './dashboard.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  imports: [DatePipe],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {

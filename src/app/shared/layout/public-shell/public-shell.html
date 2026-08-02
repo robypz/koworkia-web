@@ -1,0 +1,65 @@
+<div class="flex min-h-screen flex-col bg-bg-surface text-on-surface">
+  <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-surface-variant bg-surface px-4 shadow-sm sm:px-8">
+    <a routerLink="/" class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-3xl text-primary-container" style="font-variation-settings: 'FILL' 1">crop_free</span>
+      <span class="font-display text-lg font-bold text-on-surface">Koworkia</span>
+    </a>
+
+    @if (isAuthenticated()) {
+      <div class="flex items-center gap-4">
+        <a
+          routerLink="/mis-reservas"
+          routerLinkActive="text-primary"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="hidden text-sm font-medium text-on-surface-variant transition-colors hover:text-primary sm:block"
+        >
+          Mis reservas
+        </a>
+        <a
+          routerLink="/perfil"
+          routerLinkActive="text-primary"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="hidden text-sm font-medium text-on-surface-variant transition-colors hover:text-primary sm:block"
+        >
+          Mi perfil
+        </a>
+        @if (isAdmin()) {
+          <a
+            routerLink="/dashboard"
+            class="hidden text-sm font-medium text-on-surface-variant transition-colors hover:text-primary sm:block"
+          >
+            Panel de administración
+          </a>
+        }
+        <div class="hidden text-right sm:block">
+          <p class="text-sm font-semibold text-primary">{{ user()?.name }}</p>
+        </div>
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-bold text-on-primary-container">
+          {{ initials() }}
+        </div>
+        <button
+          type="button"
+          class="rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low"
+          title="Cerrar sesión"
+          (click)="logout()"
+        >
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    } @else {
+      <a
+        routerLink="/login"
+        class="rounded-lg bg-primary-container px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-container/90"
+      >
+        Iniciar sesión
+      </a>
+    }
+  </header>
+
+  <main class="flex-1 px-4 py-6 sm:px-8 sm:py-10">
+    <router-outlet />
+  </main>
+</div>
+
+<app-toast />
+<app-confirm-dialog />

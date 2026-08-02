@@ -3,7 +3,6 @@ import { SPACE_TYPE_LABELS, Space, SpacePayload, SpaceType } from '../../../core
 import { NotificationService } from '../../../core/services/notification.service';
 import { BadgeVariant, StatusBadge } from '../../../shared/ui/status-badge/status-badge';
 import { TableCard } from '../../../shared/ui/table-card/table-card';
-import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog/confirm-dialog.service';
 import { SpaceForm } from '../space-form/space-form';
 import { SpacesService } from '../spaces.service';
 
@@ -23,7 +22,6 @@ const TYPE_BADGE_VARIANT: Record<SpaceType, BadgeVariant> = {
 })
 export class SpacesList implements OnInit {
   private readonly spacesService = inject(SpacesService);
-  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly notifications = inject(NotificationService);
 
   protected readonly spaces = signal<Space[]>([]);
@@ -85,24 +83,6 @@ export class SpacesList implements OnInit {
         this.saving.set(false);
         this.notifications.error('No se pudo guardar el espacio.');
       },
-    });
-  }
-
-  protected async remove(space: Space): Promise<void> {
-    const confirmed = await this.confirmDialog.confirm({
-      title: 'Desactivar espacio',
-      message: `¿Seguro que quieres desactivar "${space.name}"? Dejará de estar disponible para reservas.`,
-      confirmText: 'Desactivar',
-      variant: 'danger',
-    });
-    if (!confirmed) return;
-
-    this.spacesService.deactivate(space.id).subscribe({
-      next: () => {
-        this.notifications.success('Espacio desactivado.');
-        this.load();
-      },
-      error: () => this.notifications.error('No se pudo desactivar el espacio.'),
     });
   }
 

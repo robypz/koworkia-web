@@ -1,0 +1,122 @@
+@if (loading()) {
+  <div class="flex items-center justify-center py-24 text-on-surface-variant">
+    <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+  </div>
+} @else if (companyLocked()) {
+  <div class="mx-auto flex max-w-md flex-col items-center gap-3 px-6 py-24 text-center">
+    <span class="material-symbols-outlined text-4xl text-primary">lock</span>
+    <h1 class="font-display text-lg font-semibold text-on-surface">Inicia sesión para ver este perfil</h1>
+    <p class="text-sm text-text-secondary">Necesitas una cuenta para ver el perfil público de esta empresa.</p>
+    <a
+      routerLink="/login"
+      class="mt-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-container/90"
+    >
+      Iniciar sesión
+    </a>
+  </div>
+} @else if (notFound() || !company()) {
+  <div class="mx-auto max-w-xl px-6 py-24 text-center text-sm text-text-secondary">
+    No se encontró la empresa solicitada.
+  </div>
+} @else {
+  <div class="mx-auto flex max-w-6xl flex-col gap-8">
+    <!-- Hero -->
+    <div class="overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm">
+      <div class="h-28 bg-gradient-to-r from-primary to-primary-container sm:h-36"></div>
+      <div class="flex flex-col gap-4 px-6 pb-6 sm:flex-row sm:items-end sm:px-8">
+        <div class="-mt-10 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border-4 border-surface bg-surface-container-lowest shadow-md sm:h-24 sm:w-24">
+          <span class="material-symbols-outlined text-4xl text-primary">apartment</span>
+        </div>
+        <div class="flex-1 pt-2 sm:pt-0">
+          <h1 class="font-display text-2xl font-bold text-on-surface">{{ company()!.name }}</h1>
+          <p class="mt-1 text-sm text-text-secondary">
+            @if (spacesLocked()) {
+              Espacio de coworking
+            } @else {
+              Espacio de coworking · {{ spaces().length }} espacio{{ spaces().length === 1 ? '' : 's' }} disponible{{ spaces().length === 1 ? '' : 's' }}
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spaces -->
+    @if (spacesLocked()) {
+      <div class="flex flex-col items-center gap-3 rounded-xl border border-surface-variant bg-surface px-6 py-16 text-center">
+        <span class="material-symbols-outlined text-4xl text-primary">lock</span>
+        <h2 class="font-display text-lg font-semibold text-on-surface">Inicia sesión para ver los espacios</h2>
+        <p class="max-w-sm text-sm text-text-secondary">
+          Los espacios y la disponibilidad de {{ company()!.name }} solo son visibles para usuarios con una cuenta activa.
+        </p>
+        <a
+          routerLink="/login"
+          class="mt-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-container/90"
+        >
+          Iniciar sesión
+        </a>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="font-display text-lg font-semibold text-on-surface">Espacios disponibles</h2>
+            <p class="mt-1 text-sm text-text-secondary">Elige un espacio y reserva tu horario.</p>
+          </div>
+          <div class="relative">
+            <span class="material-symbols-outlined pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-text-secondary">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Buscar espacios..."
+              class="w-56 rounded-lg border border-surface-variant bg-white py-2 pr-3 pl-9 text-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              [value]="query()"
+              (input)="query.set($any($event.target).value)"
+            />
+          </div>
+        </div>
+
+        @if (filteredSpaces().length === 0) {
+          <div class="rounded-xl border border-surface-variant bg-surface px-6 py-16 text-center text-sm text-text-secondary">
+            Esta empresa no tiene espacios disponibles por el momento.
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @for (space of filteredSpaces(); track space.id) {
+              <div class="flex flex-col overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm transition-shadow hover:shadow-md">
+                <div class="flex h-32 items-center justify-center bg-surface-container-low">
+                  <span class="material-symbols-outlined text-4xl text-primary/60">{{ typeIcon[space.type] }}</span>
+                </div>
+                <div class="flex flex-1 flex-col gap-3 p-5">
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-on-surface">{{ space.name }}</h3>
+                    <app-status-badge [variant]="space.is_active ? 'success' : 'error'" [dot]="true">
+                      {{ space.is_active ? 'Disponible' : 'No disponible' }}
+                    </app-status-badge>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
+                    <span class="inline-flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[16px]">group</span>
+                      {{ space.capacity }} pers.
+                    </span>
+                    <app-status-badge [variant]="typeBadgeVariant[space.type]">{{ typeLabels[space.type] }}</app-status-badge>
+                  </div>
+                  <button
+                    type="button"
+                    class="mt-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+                    [class]="space.is_active ? 'bg-primary-container text-white hover:bg-primary-container/90' : 'cursor-not-allowed bg-surface-variant text-text-secondary'"
+                    [disabled]="!space.is_active"
+                    (click)="reservar(space)"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                    Reservar
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
