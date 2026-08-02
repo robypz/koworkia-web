@@ -1,0 +1,107 @@
+<div class="mx-auto flex max-w-7xl flex-col gap-6">
+  <!-- Controls -->
+  <div class="flex flex-col gap-4 rounded-xl border border-surface-variant bg-surface p-4 shadow-sm sm:flex-row sm:items-end sm:justify-between">
+    <div class="flex flex-wrap items-end gap-4">
+      <div>
+        <label class="mb-1 block text-xs font-medium text-text-secondary" for="date">Fecha</label>
+        <input
+          id="date"
+          type="date"
+          [value]="date()"
+          (change)="onDateChange($any($event.target).value)"
+          class="rounded-lg border border-surface-variant bg-white px-3 py-2 text-sm font-medium text-text-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-medium text-text-secondary" for="space">Espacio</label>
+        <select
+          id="space"
+          [value]="spaceId()"
+          (change)="onSpaceChange($any($event.target).value)"
+          class="rounded-lg border border-surface-variant bg-white px-3 py-2 text-sm font-medium text-text-primary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+        >
+          @for (space of spaces(); track space.id) {
+            <option [value]="space.id">{{ space.name }} ({{ space.capacity }} pax)</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button
+        type="button"
+        class="rounded-lg border border-surface-variant bg-white px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-surface"
+        (click)="goToday()"
+      >
+        Hoy
+      </button>
+      <div class="flex overflow-hidden rounded-lg border border-surface-variant bg-white">
+        <button type="button" class="border-r border-surface-variant p-2 text-text-secondary transition-colors hover:bg-bg-surface" (click)="shiftDay(-1)">
+          <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+        </button>
+        <button type="button" class="p-2 text-text-secondary transition-colors hover:bg-bg-surface" (click)="shiftDay(1)">
+          <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm">
+    @if (loading()) {
+      <div class="flex items-center justify-center py-16 text-on-surface-variant">
+        <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+      </div>
+    } @else if (!spaceId()) {
+      <div class="px-6 py-16 text-center text-sm text-text-secondary">No hay espacios activos disponibles.</div>
+    } @else {
+      <div class="overflow-x-auto">
+        <div class="grid min-w-[840px] grid-cols-12 border-b border-surface-variant bg-bg-surface/50">
+          @for (hour of hours; track hour) {
+            <div class="border-r border-surface-variant p-3 text-center text-xs font-medium text-text-secondary last:border-r-0">
+              {{ hour }}:00
+            </div>
+          }
+        </div>
+        <div class="grid min-w-[840px] grid-cols-12">
+          @for (slot of slots(); track slot.start_hour) {
+            <div class="h-20 border-r border-surface-variant p-1 last:border-r-0">
+              @if (slot.status === 'free') {
+                <button
+                  type="button"
+                  class="group flex h-full w-full items-center justify-center rounded-md transition-colors hover:bg-primary/5"
+                  (click)="onSlotClick(slot)"
+                >
+                  <span class="material-symbols-outlined text-primary opacity-0 transition-opacity group-hover:opacity-100">add</span>
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="flex h-full w-full flex-col justify-center rounded-md border p-2 text-left transition-colors"
+                  [class]="isManageable(slot) ? 'border-primary/20 bg-primary-container/10 hover:border-primary cursor-pointer' : 'border-surface-variant bg-surface-container-high cursor-default'"
+                  [disabled]="!isManageable(slot)"
+                  (click)="onSlotClick(slot)"
+                >
+                  <span class="truncate text-xs font-semibold" [class]="isManageable(slot) ? 'text-primary' : 'text-on-surface'">
+                    {{ slotLabel(slot) }}
+                  </span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Legend -->
+  <div class="flex items-center gap-4 px-2">
+    <div class="flex items-center gap-2">
+      <div class="h-3 w-3 rounded-sm border border-surface-variant bg-white"></div>
+      <span class="text-xs text-text-secondary">Disponible</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="h-3 w-3 rounded-sm border border-primary/20 bg-primary-container/10"></div>
+      <span class="text-xs text-text-secondary">Reservado</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="mx-auto flex max-w-6xl flex-col gap-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h3 class="font-display text-lg font-semibold text-on-surface">Directorio de Miembros</h3>
+      <p class="mt-1 text-sm text-text-secondary">Administra los usuarios de Koworkia, sus planes y estado actual.</p>
+    </div>
+    <button
+      type="button"
+      class="flex items-center gap-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-container/90"
+      (click)="openCreate()"
+    >
+      <span class="material-symbols-outlined text-[20px]">person_add</span>
+      Nuevo Miembro
+    </button>
+  </div>
+
+  <app-table-card>
+    @if (loading()) {
+      <div class="flex items-center justify-center py-16 text-on-surface-variant">
+        <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+      </div>
+    } @else if (members().length === 0) {
+      <div class="px-6 py-16 text-center text-sm text-text-secondary">Todavía no hay miembros registrados.</div>
+    } @else {
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="border-b border-surface-variant bg-surface-container-low">
+            <th class="px-6 py-4 text-xs font-medium tracking-wider text-text-secondary uppercase">Nombre</th>
+            <th class="px-6 py-4 text-xs font-medium tracking-wider text-text-secondary uppercase">Email</th>
+            <th class="px-6 py-4 text-xs font-medium tracking-wider text-text-secondary uppercase">Plan</th>
+            <th class="px-6 py-4 text-xs font-medium tracking-wider text-text-secondary uppercase">Estado</th>
+            <th class="px-6 py-4 text-right text-xs font-medium tracking-wider text-text-secondary uppercase">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          @for (member of members(); track member.id) {
+            <tr class="group border-b border-surface-variant/50 transition-colors last:border-b-0 hover:bg-surface-container-low/50">
+              <td class="flex items-center gap-3 px-6 py-4">
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-secondary-container text-xs font-bold text-on-secondary-container">
+                  {{ initials(member.name) }}
+                </div>
+                <span class="font-medium text-on-surface">{{ member.name }}</span>
+              </td>
+              <td class="px-6 py-4 text-text-secondary">{{ member.email }}</td>
+              <td class="px-6 py-4">
+                @if (member.plan) {
+                  <app-status-badge variant="primary">{{ member.plan.name }}</app-status-badge>
+                } @else {
+                  <app-status-badge variant="neutral">Sin plan</app-status-badge>
+                }
+              </td>
+              <td class="px-6 py-4">
+                <app-status-badge [variant]="member.status === 'active' ? 'success' : 'neutral'" [dot]="true">
+                  {{ member.status === 'active' ? 'Activo' : 'Inactivo' }}
+                </app-status-badge>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <button type="button" class="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-primary-container/10 hover:text-primary" title="Editar" (click)="openEdit(member)">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </button>
+                  <button type="button" class="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-error/10 hover:text-error" title="Dar de baja" (click)="remove(member)">
+                    <span class="material-symbols-outlined text-[18px]">person_remove</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </app-table-card>
+</div>
+
+@if (formState(); as state) {
+  <app-member-form
+    [member]="state.mode === 'edit' ? state.member : null"
+    [saving]="saving()"
+    (save)="submitForm($event)"
+    (cancel)="closeForm()"
+  />
+}

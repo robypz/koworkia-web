@@ -1,0 +1,69 @@
+@if (loading()) {
+  <div class="flex items-center justify-center py-24 text-on-surface-variant">
+    <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+  </div>
+} @else if (error()) {
+  <div class="rounded-lg border border-error/20 bg-error-container/40 p-6 text-on-error-container">
+    No se pudo cargar el dashboard. Inténtalo de nuevo más tarde.
+  </div>
+} @else if (summary(); as data) {
+  <div class="mx-auto flex max-w-7xl flex-col gap-6">
+    <!-- Metrics -->
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div class="rounded-lg border border-surface-variant/50 bg-surface-container-lowest p-6 shadow-sm">
+        <div class="mb-4 flex items-start justify-between">
+          <h3 class="text-xs font-medium tracking-wide text-text-secondary uppercase">Ocupación</h3>
+          <span class="material-symbols-outlined text-text-secondary">chair_alt</span>
+        </div>
+        <div class="font-display text-3xl font-bold tracking-tight text-primary">{{ data.occupancy_pct }}%</div>
+        <div class="mt-4 h-1.5 w-full rounded-full bg-surface-container-high">
+          <div class="h-1.5 rounded-full bg-primary-container" [style.width.%]="data.occupancy_pct"></div>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-surface-variant/50 bg-surface-container-lowest p-6 shadow-sm">
+        <div class="mb-4 flex items-start justify-between">
+          <h3 class="text-xs font-medium tracking-wide text-text-secondary uppercase">Reservas hoy</h3>
+          <span class="material-symbols-outlined text-text-secondary">calendar_today</span>
+        </div>
+        <div class="font-display text-3xl font-bold tracking-tight text-primary">{{ data.today_bookings }}</div>
+      </div>
+
+      <div class="rounded-lg border border-surface-variant/50 bg-surface-container-lowest p-6 shadow-sm">
+        <div class="mb-4 flex items-start justify-between">
+          <h3 class="text-xs font-medium tracking-wide text-text-secondary uppercase">Miembros activos</h3>
+          <span class="material-symbols-outlined text-text-secondary">group</span>
+        </div>
+        <div class="font-display text-3xl font-bold tracking-tight text-primary">{{ data.active_members }}</div>
+      </div>
+    </div>
+
+    <!-- Próximas reservas -->
+    <div class="rounded-lg border border-surface-variant/50 bg-surface-container-lowest p-6 shadow-sm">
+      <h3 class="font-display mb-6 text-lg font-semibold text-primary">Próximas reservas</h3>
+
+      @if (data.upcoming.length === 0) {
+        <p class="text-sm text-text-secondary">No hay reservas próximas.</p>
+      } @else {
+        <div class="space-y-4">
+          @for (booking of data.upcoming; track booking.id) {
+            <div class="flex items-center justify-between rounded-lg border border-transparent p-3 transition-colors hover:border-surface-variant hover:bg-surface-container-low">
+              <div>
+                <h4 class="text-sm font-semibold text-on-surface">{{ booking.space?.name }}</h4>
+                <p class="mt-1 text-xs text-text-secondary">
+                  {{ booking.start_hour }}:00 - {{ booking.start_hour + 1 }}:00 · {{ booking.date }}
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-text-secondary">{{ booking.user?.name }}</span>
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-high text-xs font-bold text-primary-container">
+                  {{ initials(booking.user?.name ?? '') }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
