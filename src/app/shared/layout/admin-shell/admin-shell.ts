@@ -27,6 +27,7 @@ const TITLES: { prefix: string; title: string }[] = [
   { prefix: '/spaces', title: 'Gestión de Espacios' },
   { prefix: '/members', title: 'Gestión de Miembros' },
   { prefix: '/bookings', title: 'Reservas' },
+  { prefix: '/empresas', title: 'Perfil de la empresa' },
 ];
 
 @Component({

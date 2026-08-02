@@ -14,6 +14,12 @@ export class SpacesService {
     return this.http.get<LaravelPage<Space>>(this.base).pipe(map((res) => res.data));
   }
 
+  listByCompany(companyId: number): Observable<Space[]> {
+    return this.http
+      .get<LaravelPage<Space>>(`${this.base}/byCompany/${companyId}`)
+      .pipe(map((res) => res.data));
+  }
+
   create(payload: SpacePayload): Observable<Space> {
     return this.http.post<ApiResource<Space>>(this.base, payload).pipe(map((res) => res.data));
   }

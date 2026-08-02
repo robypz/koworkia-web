@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reservas - Koworkia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Sora:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#191b23",
+                      "primary-fixed": "#dbe1ff",
+                      "on-error-container": "#93000a",
+                      "on-background": "#191b23",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#e1e2ed",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "primary": "#004ac6",
+                      "secondary-fixed-dim": "#b6c4ff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "tertiary": "#943700",
+                      "on-tertiary-fixed": "#360f00",
+                      "inverse-surface": "#2e3039",
+                      "surface-bright": "#faf8ff",
+                      "success": "#10B981",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "surface-container": "#ededf9",
+                      "surface": "#faf8ff",
+                      "secondary-container": "#8fa7fe",
+                      "inverse-primary": "#b4c5ff",
+                      "bg-surface": "#F1F5F9",
+                      "background": "#faf8ff",
+                      "surface-tint": "#0053db",
+                      "surface-container-low": "#f3f3fe",
+                      "secondary": "#4059aa",
+                      "text-secondary": "#6B7280",
+                      "error": "#EF4444",
+                      "surface-container-highest": "#e1e2ed",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-secondary-fixed": "#00164e",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#dce1ff",
+                      "outline": "#737686",
+                      "surface-container-high": "#e7e7f3",
+                      "on-primary-container": "#eeefff",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface-dim": "#d9d9e5",
+                      "on-primary-fixed": "#00174b",
+                      "primary-container": "#2563eb",
+                      "on-secondary-fixed-variant": "#264191",
+                      "on-secondary-container": "#1d3989",
+                      "outline-variant": "#c3c6d7",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-surface-variant": "#434655",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#ffede6",
+                      "tertiary-container": "#bc4800",
+                      "surface-container-lowest": "#ffffff",
+                      "text-primary": "#111827"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "1rem",
+                      "xl": "2rem",
+                      "xs": "0.25rem",
+                      "sm": "0.5rem",
+                      "base": "4px",
+                      "lg": "1.5rem",
+                      "margin-desktop": "2rem",
+                      "margin-mobile": "1rem",
+                      "gutter": "1rem"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Sora"
+                      ],
+                      "headline-sm": [
+                              "Sora"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Sora"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #D1D5DB;
+            border-radius: 20px;
+        }
+      </style>
+</head>
+<body class="bg-bg-surface text-text-primary font-body-md antialiased min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar -->
+<nav class="bg-on-surface text-surface fixed left-0 top-0 h-full w-[260px] shadow-md flex-col py-6 hidden md:flex z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-headline-sm">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">widgets</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-surface">Koworkia</h1>
+<p class="font-label-md text-label-md text-surface-variant opacity-80">Manage. Connect. Grow.</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="px-2 space-y-1">
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg font-headline-sm text-headline-sm hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg font-headline-sm text-headline-sm hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">chair_alt</span>
+                    Puestos
+                </a>
+<a class="bg-primary-container text-on-primary-container rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 font-headline-sm text-headline-sm active:scale-[0.98] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+                    Reservas
+                </a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg font-headline-sm text-headline-sm hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Miembros
+                </a>
+</div>
+</div>
+<div class="px-2 mt-auto pt-6 border-t border-surface-variant/20">
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg font-headline-sm text-headline-sm hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">pie_chart</span>
+                Reportes
+            </a>
+<a class="text-surface-variant hover:text-surface mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg font-headline-sm text-headline-sm hover:bg-on-secondary-container/10 active:scale-[0.98] duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Ajustes
+            </a>
+</div>
+</nav>
+<!-- Mobile Nav Header (Placeholder for mobile layout) -->
+<div class="md:hidden bg-surface flex items-center justify-between p-4 border-b border-surface-variant shadow-sm z-50 sticky top-0">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">widgets</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-text-primary">Koworkia</h1>
+</div>
+<button class="p-2 text-text-secondary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-[260px] min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface docked full-width top-0 h-16 border-b border-surface-variant flex justify-between items-center px-8 w-full z-40 sticky">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-sm text-headline-sm text-primary border-b-2 border-primary pb-[22px] pt-4 translate-y-[2px]">Reservas</h2>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-bg-surface border border-surface-variant rounded-full text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow w-48" placeholder="Buscar..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-text-secondary hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-text-secondary hover:text-primary transition-colors p-1 rounded-full hover:bg-surface-container-low hidden sm:block">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="flex items-center gap-2 border-l border-surface-variant pl-4 ml-2">
+<img class="w-8 h-8 rounded-full object-cover border border-surface-variant" data-alt="A professional headshot of a female administrative worker in her 30s, smiling softly. She has dark hair tied back, wearing a neat navy blue blouse. The lighting is soft and natural, suggesting a bright, modern office environment. High resolution, corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAwtgiIs8Kroaxz_ejyVwqgvh52TUJU807-DAhTECOYdkDCVShQNLoYIDZDqWkpgdP8mXTFAXx3Cy8Jy9KCn20l0eFuzac5EPjWx0lzjmZYACrsL_vz9MdWDQDbBVPciICaS0XuY8zaB1I1ErGcxf4ORn12GsLTbIox1qd3iE7zUFJIjGlUhduyOrYxapSzD4jwopcdV8R10CU2Qe4mozIIA5VuhMX9EJSpmuF6hhdpn27DF66wb9LFA"/>
+<span class="font-body-md text-body-md font-medium hidden sm:block">Admin</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-margin-mobile md:p-margin-desktop overflow-x-auto bg-bg-surface">
+<div class="max-w-7xl mx-auto space-y-6">
+<!-- Controls Header -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-4 rounded-xl shadow-sm border border-surface-variant">
+<div class="flex flex-wrap items-center gap-4">
+<!-- Date Picker -->
+<div class="relative">
+<label class="block font-label-md text-label-md text-text-secondary mb-1">Fecha</label>
+<div class="flex items-center border border-surface-variant rounded-lg px-3 py-2 bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-text-secondary mr-2 text-sm">calendar_month</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-sm font-medium text-text-primary cursor-pointer w-[130px]" type="date" value="2024-05-15"/>
+</div>
+</div>
+<!-- Space Selector -->
+<div class="relative">
+<label class="block font-label-md text-label-md text-text-secondary mb-1">Espacio</label>
+<div class="flex items-center border border-surface-variant rounded-lg px-3 py-2 bg-white focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-text-secondary mr-2 text-sm">meeting_room</span>
+<select class="bg-transparent border-none p-0 focus:ring-0 text-sm font-medium text-text-primary cursor-pointer pr-6 w-[160px]">
+<option>Sala B (8 pax)</option>
+<option>Sala A (4 pax)</option>
+<option>Sala C (12 pax)</option>
+<option>Cabina 1</option>
+</select>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-white border border-surface-variant text-text-secondary font-medium rounded-lg text-sm hover:bg-bg-surface transition-colors">Hoy</button>
+<div class="flex border border-surface-variant rounded-lg overflow-hidden bg-white">
+<button class="p-2 hover:bg-bg-surface text-text-secondary transition-colors border-r border-surface-variant"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-2 hover:bg-bg-surface text-text-secondary transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Booking Grid -->
+<div class="bg-surface rounded-xl shadow-sm border border-surface-variant overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<div class="min-w-[800px]">
+<!-- Grid Header (Times) -->
+<div class="grid grid-cols-[100px_repeat(12,1fr)] border-b border-surface-variant bg-bg-surface/50">
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary uppercase">Espacio</div>
+<!-- 8:00 to 19:00 (12 slots) -->
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">08:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">09:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">10:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">11:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">12:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">13:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">14:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">15:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">16:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">17:00</div>
+<div class="p-3 border-r border-surface-variant text-center font-label-md text-label-md text-text-secondary">18:00</div>
+<div class="p-3 text-center font-label-md text-label-md text-text-secondary">19:00</div>
+</div>
+<!-- Grid Body (Rows) -->
+<!-- Row 1 -->
+<div class="grid grid-cols-[100px_repeat(12,1fr)] border-b border-surface-variant group hover:bg-bg-surface/30 transition-colors">
+<div class="p-3 border-r border-surface-variant flex items-center justify-center font-body-md font-medium text-text-primary bg-white">Sala B</div>
+<!-- Slots -->
+<div class="border-r border-surface-variant p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+<div class="border-r border-surface-variant p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+<!-- Occupied Block (2 hours: 10:00 - 12:00) -->
+<div class="col-span-2 border-r border-surface-variant p-1">
+<div class="h-full bg-primary-container/10 border border-primary/20 rounded-md p-2 flex flex-col justify-center cursor-pointer hover:border-primary transition-colors">
+<span class="font-label-md text-primary font-semibold truncate block">Carlos Ruiz</span>
+<span class="text-[10px] text-text-secondary block">10:00 - 12:00</span>
+</div>
+</div>
+<div class="border-r border-surface-variant p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+<!-- Occupied Block (1 hour: 13:00) -->
+<div class="border-r border-surface-variant p-1">
+<div class="h-full bg-surface-container-high border border-surface-variant rounded-md p-2 flex flex-col justify-center cursor-pointer hover:border-outline transition-colors">
+<span class="font-label-md text-text-primary font-medium truncate block">Int. Mtg</span>
+</div>
+</div>
+<div class="border-r border-surface-variant p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+<div class="border-r border-surface-variant p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+<!-- Occupied Block (3 hours: 16:00 - 19:00) -->
+<div class="col-span-3 border-r border-surface-variant p-1">
+<div class="h-full bg-primary-container/10 border border-primary/20 rounded-md p-2 flex flex-col justify-center cursor-pointer hover:border-primary transition-colors">
+<span class="font-label-md text-primary font-semibold truncate block">Ana Garcia (Workshop)</span>
+<span class="text-[10px] text-text-secondary block">16:00 - 19:00</span>
+</div>
+</div>
+<div class="p-1 cursor-pointer hover:bg-primary/5 transition-colors relative group/slot">
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slot:opacity-100"><span class="material-symbols-outlined text-primary text-sm">add</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex items-center gap-4 px-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-white border border-surface-variant rounded-sm"></div>
+<span class="font-label-md text-text-secondary">Disponible</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-primary-container/10 border border-primary/20 rounded-sm"></div>
+<span class="font-label-md text-text-secondary">Reservado (Miembros)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-surface-container-high border border-surface-variant rounded-sm"></div>
+<span class="font-label-md text-text-secondary">Interno/Bloqueado</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface py-4 px-8 mt-auto border-t border-surface-variant flex justify-between items-center w-full text-on-surface-variant font-label-md text-label-md">
+<span>© 2024 Koworkia Management System</span>
+<div class="flex gap-4">
+<a class="hover:text-primary transition-colors" href="#">v1.2.0</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</footer>
+</main>
+</body></html>

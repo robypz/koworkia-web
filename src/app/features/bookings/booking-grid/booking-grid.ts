@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Datepicker } from 'flowbite';
 import { Booking } from '../../../core/models/booking.model';
 import { Space } from '../../../core/models/space.model';
@@ -25,6 +26,10 @@ export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly notifications = inject(NotificationService);
   private readonly auth = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+
+  /** Lets links like the company profile's "Reservar" button deep-link into a specific space via `?space=id`. */
+  private readonly presetSpaceId = Number(this.route.snapshot.queryParamMap.get('space')) || null;
 
   @ViewChild('dateInput', { static: true })
   private readonly dateInputRef!: ElementRef<HTMLInputElement>;
@@ -103,7 +108,10 @@ export class BookingGrid implements OnInit, AfterViewInit, OnDestroy {
     this.spacesService.list().subscribe((spaces) => {
       const active = spaces.filter((space) => space.is_active);
       this.spaces.set(active);
-      if (active.length > 0) {
+      const preset = active.find((space) => space.id === this.presetSpaceId);
+      if (preset) {
+        this.spaceId.set(preset.id);
+      } else if (active.length > 0) {
         this.spaceId.set(active[0].id);
       }
       spacesLoaded = true;
