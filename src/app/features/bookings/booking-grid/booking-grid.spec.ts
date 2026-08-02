@@ -15,7 +15,7 @@ describe('BookingGrid slot logic', () => {
         id: 7,
         name: 'Miembro Uno',
         email: 'm1@koworkia.com',
-        role: 'member',
+        roles: [{ id: 1, name: 'user', guard_name: 'web' }],
         phone: null,
         plan_id: null,
         status: 'active',

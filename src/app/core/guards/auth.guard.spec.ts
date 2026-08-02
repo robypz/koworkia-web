@@ -2,11 +2,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { User } from '../models/user.model';
+import { RoleName, User } from '../models/user.model';
 import { adminGuard } from './admin.guard';
 import { authGuard } from './auth.guard';
 
-const storeSession = (role: User['role']): void => {
+const storeSession = (role: RoleName): void => {
   localStorage.setItem('koworkia_token', 'tok');
   localStorage.setItem(
     'koworkia_user',
@@ -14,7 +14,7 @@ const storeSession = (role: User['role']): void => {
       id: 1,
       name: 'Usuario',
       email: 'user@koworkia.com',
-      role,
+      roles: [{ id: 1, name: role, guard_name: 'web' }],
       phone: null,
       plan_id: null,
       status: 'active',
@@ -31,7 +31,7 @@ describe('authGuard', () => {
   });
 
   it('allows navigation when there is a stored session', () => {
-    storeSession('member');
+    storeSession('user');
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
     expect(result).toBe(true);
   });
@@ -57,8 +57,14 @@ describe('adminGuard', () => {
     expect(result).toBe(true);
   });
 
+  it('allows root through', () => {
+    storeSession('root');
+    const result = TestBed.runInInjectionContext(() => adminGuard({} as any, {} as any));
+    expect(result).toBe(true);
+  });
+
   it('redirects members to /bookings', () => {
-    storeSession('member');
+    storeSession('user');
     const result = TestBed.runInInjectionContext(() => adminGuard({} as any, {} as any));
     const router = TestBed.inject(Router);
     expect(result).toEqual(router.parseUrl('/bookings'));

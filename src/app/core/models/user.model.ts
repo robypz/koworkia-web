@@ -1,13 +1,19 @@
 import { Plan } from './plan.model';
 
-export type UserRole = 'admin' | 'member';
+export type RoleName = 'root' | 'admin' | 'user';
 export type UserStatus = 'active' | 'inactive';
+
+export interface Role {
+  id: number;
+  name: RoleName;
+  guard_name: string;
+}
 
 export interface User {
   id: number;
   name: string;
   email: string;
-  role: UserRole;
+  roles: Role[];
   phone: string | null;
   plan_id: number | null;
   plan?: Plan | null;

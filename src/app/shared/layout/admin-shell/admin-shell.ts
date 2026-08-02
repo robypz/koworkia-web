@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { RoleName } from '../../../core/models/user.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { ConfirmDialog } from '../../ui/confirm-dialog/confirm-dialog';
 import { Toast } from '../../ui/toast/toast';
@@ -10,14 +11,15 @@ interface NavItem {
   label: string;
   icon: string;
   path: string;
-  adminOnly: boolean;
+  /** Roles allowed to see this item; omit to show it to any authenticated role. */
+  roles?: RoleName[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', icon: 'dashboard', path: '/dashboard', adminOnly: true },
-  { label: 'Puestos', icon: 'chair_alt', path: '/spaces', adminOnly: true },
-  { label: 'Reservas', icon: 'calendar_today', path: '/bookings', adminOnly: false },
-  { label: 'Miembros', icon: 'group', path: '/members', adminOnly: true },
+  { label: 'Dashboard', icon: 'dashboard', path: '/dashboard', roles: ['root', 'admin'] },
+  { label: 'Puestos', icon: 'chair_alt', path: '/spaces', roles: ['root', 'admin'] },
+  { label: 'Reservas', icon: 'calendar_today', path: '/bookings' },
+  { label: 'Miembros', icon: 'group', path: '/members', roles: ['root', 'admin'] },
 ];
 
 const TITLES: { prefix: string; title: string }[] = [
@@ -40,7 +42,7 @@ export class AdminShell {
   protected readonly user = this.auth.user;
 
   protected readonly navItems = computed(() =>
-    NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.isAdmin()),
+    NAV_ITEMS.filter((item) => !item.roles || this.auth.hasRole(...item.roles)),
   );
 
   protected readonly initials = computed(() => {

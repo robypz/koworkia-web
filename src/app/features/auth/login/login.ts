@@ -38,9 +38,9 @@ export class Login {
 
     const { email, password } = this.form.getRawValue();
     this.auth.login(email, password).subscribe({
-      next: (user) => {
+      next: () => {
         this.submitting.set(false);
-        this.router.navigateByUrl(user.role === 'admin' ? '/dashboard' : '/bookings');
+        this.router.navigateByUrl(this.auth.isAdmin() ? '/dashboard' : '/bookings');
       },
       error: () => {
         this.submitting.set(false);

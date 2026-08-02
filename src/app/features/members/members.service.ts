@@ -8,10 +8,10 @@ import { CreateMemberPayload, UpdateMemberPayload, User } from '../../core/model
 @Injectable({ providedIn: 'root' })
 export class MembersService {
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/members`;
+  private readonly base = `${environment.apiUrl}/users`;
 
   list(): Observable<User[]> {
-    return this.http.get<ApiCollection<User>>(this.base).pipe(map((res) => res.data));
+    return this.http.get<ApiCollection<User>>(this.base + '/admins').pipe(map((res) => res.data));
   }
 
   create(payload: CreateMemberPayload): Observable<User> {

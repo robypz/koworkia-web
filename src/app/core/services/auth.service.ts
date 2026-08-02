@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, catchError, map, of, tap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResource } from '../models/api.model';
-import { User } from '../models/user.model';
+import { RoleName, User } from '../models/user.model';
 
 interface LoginResponse {
   token: string;
-  user: User;
 }
 
 const TOKEN_KEY = 'koworkia_token';
@@ -20,7 +19,12 @@ export class AuthService {
   private readonly _user = signal<User | null>(this.readStoredUser());
   readonly user = this._user.asReadonly();
   readonly isAuthenticated = computed(() => this._user() !== null);
-  readonly isAdmin = computed(() => this._user()?.role === 'admin');
+  readonly isAdmin = computed(() => this.hasRole('root', 'admin'));
+
+  hasRole(...names: RoleName[]): boolean {
+    const roles = this._user()?.roles ?? [];
+    return roles.some((role) => names.includes(role.name));
+  }
 
   get token(): string | null {
     return localStorage.getItem(TOKEN_KEY);
@@ -30,13 +34,20 @@ export class AuthService {
     return this.http
       .post<ApiResource<LoginResponse>>(`${environment.apiUrl}/login`, { email, password })
       .pipe(
+        tap(({ data }) => localStorage.setItem(TOKEN_KEY, data.token)),
+        switchMap(() => this.fetchProfile()),
+      );
+  }
+
+  fetchProfile(): Observable<User> {
+    return this.http
+      .get<ApiResource<User>>(`${environment.apiUrl}/user/profile-information`)
+      .pipe(
         map((res) => res.data),
-        tap(({ token, user }) => {
-          localStorage.setItem(TOKEN_KEY, token);
+        tap((user) => {
           localStorage.setItem(USER_KEY, JSON.stringify(user));
           this._user.set(user);
         }),
-        map(({ user }) => user),
       );
   }
 

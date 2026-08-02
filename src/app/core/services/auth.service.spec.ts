@@ -13,7 +13,7 @@ describe('AuthService', () => {
     id: 1,
     name: 'Admin',
     email: 'admin@koworkia.com',
-    role: 'admin',
+    roles: [{ id: 1, name: 'admin', guard_name: 'web' }],
     phone: null,
     plan_id: null,
     status: 'active',
@@ -36,9 +36,13 @@ describe('AuthService', () => {
     let result: User | undefined;
     service.login('admin@koworkia.com', 'secret').subscribe((user) => (result = user));
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/login`);
-    expect(req.request.method).toBe('POST');
-    req.flush({ data: { token: 'abc123', user: mockUser } });
+    const loginReq = httpMock.expectOne(`${environment.apiUrl}/login`);
+    expect(loginReq.request.method).toBe('POST');
+    loginReq.flush({ data: { token: 'abc123' } });
+
+    const profileReq = httpMock.expectOne(`${environment.apiUrl}/user/profile-information`);
+    expect(profileReq.request.method).toBe('GET');
+    profileReq.flush({ data: mockUser });
 
     expect(result?.name).toBe('Admin');
     expect(service.isAuthenticated()).toBe(true);
