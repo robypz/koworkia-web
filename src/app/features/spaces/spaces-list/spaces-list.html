@@ -1,0 +1,93 @@
+<div class="mx-auto flex max-w-6xl flex-col gap-6">
+  <!-- Action Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h3 class="font-display text-lg font-semibold text-on-surface">Todos los Espacios</h3>
+      <p class="mt-1 text-sm text-text-secondary">Gestiona la disponibilidad y tipos de espacios en el coworking.</p>
+    </div>
+    <button
+      type="button"
+      class="flex items-center gap-2 rounded-lg bg-primary-container px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-container/90"
+      (click)="openCreate()"
+    >
+      <span class="material-symbols-outlined text-[20px]">add</span>
+      Añadir Espacio
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex w-fit gap-2 rounded-xl border border-surface-variant bg-surface p-2 shadow-sm">
+    @for (option of filterOptions; track option.value) {
+      <button
+        type="button"
+        class="rounded-lg px-4 py-1.5 text-sm font-medium transition-colors"
+        [class]="typeFilter() === option.value ? 'bg-surface-container-low text-primary' : 'text-text-secondary hover:bg-surface-container-lowest'"
+        (click)="typeFilter.set(option.value)"
+      >
+        {{ option.label }}
+      </button>
+    }
+  </div>
+
+  <app-table-card>
+    @if (loading()) {
+      <div class="flex items-center justify-center py-16 text-on-surface-variant">
+        <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+      </div>
+    } @else if (filteredSpaces().length === 0) {
+      <div class="px-6 py-16 text-center text-sm text-text-secondary">No hay espacios que coincidan con este filtro.</div>
+    } @else {
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="border-b border-surface-variant bg-surface-container-lowest">
+            <th class="px-6 py-4 text-xs font-medium text-text-secondary">Nombre del Espacio</th>
+            <th class="px-6 py-4 text-xs font-medium text-text-secondary">Tipo</th>
+            <th class="px-6 py-4 text-xs font-medium text-text-secondary">Capacidad</th>
+            <th class="px-6 py-4 text-xs font-medium text-text-secondary">Estado</th>
+            <th class="px-6 py-4 text-right text-xs font-medium text-text-secondary">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          @for (space of filteredSpaces(); track space.id) {
+            <tr class="group border-b border-surface-variant transition-colors last:border-b-0 hover:bg-surface-container-low/50">
+              <td class="px-6 py-4 font-medium text-on-surface">{{ space.name }}</td>
+              <td class="px-6 py-4">
+                <app-status-badge [variant]="typeBadgeVariant[space.type]">{{ typeLabels[space.type] }}</app-status-badge>
+              </td>
+              <td class="px-6 py-4 text-text-secondary">
+                <span class="inline-flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">person</span>
+                  {{ space.capacity }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <app-status-badge [variant]="space.is_active ? 'success' : 'error'" [dot]="true">
+                  {{ space.is_active ? 'Activo' : 'Inactivo' }}
+                </app-status-badge>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <button type="button" class="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-primary-container/10 hover:text-primary" title="Editar" (click)="openEdit(space)">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </button>
+                  <button type="button" class="rounded-md p-1.5 text-text-secondary transition-colors hover:bg-error/10 hover:text-error" title="Desactivar" (click)="remove(space)">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </app-table-card>
+</div>
+
+@if (formState(); as state) {
+  <app-space-form
+    [space]="state.mode === 'edit' ? state.space : null"
+    [saving]="saving()"
+    (save)="submitForm($event)"
+    (cancel)="closeForm()"
+  />
+}

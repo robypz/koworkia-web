@@ -1,0 +1,60 @@
+<app-modal [open]="true" [title]="space() ? 'Editar espacio' : 'Añadir espacio'" (closed)="cancel.emit()">
+  <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
+    <div>
+      <label class="mb-1 block text-sm font-medium text-on-surface" for="name">Nombre del espacio</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Ej. Sala de reuniones A"
+        class="w-full rounded-md border border-outline-variant px-3 py-2 text-sm text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 focus:outline-none"
+      />
+    </div>
+
+    <div>
+      <label class="mb-1 block text-sm font-medium text-on-surface" for="type">Tipo</label>
+      <select
+        id="type"
+        formControlName="type"
+        class="w-full rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 focus:outline-none"
+      >
+        @for (option of typeOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label class="mb-1 block text-sm font-medium text-on-surface" for="capacity">Capacidad</label>
+      <input
+        id="capacity"
+        type="number"
+        min="1"
+        formControlName="capacity"
+        class="w-full rounded-md border border-outline-variant px-3 py-2 text-sm text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 focus:outline-none"
+      />
+    </div>
+
+    <label class="flex items-center gap-2 text-sm text-on-surface">
+      <input type="checkbox" formControlName="is_active" class="h-4 w-4 rounded border-outline-variant text-primary-container focus:ring-primary-container" />
+      Espacio activo
+    </label>
+
+    <div class="mt-2 flex justify-end gap-3">
+      <button
+        type="button"
+        class="rounded-lg border border-outline px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-variant"
+        (click)="cancel.emit()"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="rounded-lg bg-primary-container px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-container/90 disabled:opacity-70"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</app-modal>

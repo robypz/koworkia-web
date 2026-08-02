@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: koworkia-spa
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  # Development service with hot-reload
+  app-dev:
+    image: oven/bun:latest
+    container_name: koworkia-spa-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    restart: unless-stopped
+    command: bun run start
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
