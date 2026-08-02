@@ -18,8 +18,6 @@ export class PublicShell {
   protected readonly isAuthenticated = this.auth.isAuthenticated;
   protected readonly isAdmin = this.auth.isAdmin;
 
-  protected readonly homeLink = computed(() => (this.isAuthenticated() ? '/bookings' : '/login'));
-
   protected readonly initials = computed(() => {
     const name = this.user()?.name ?? '';
     return name

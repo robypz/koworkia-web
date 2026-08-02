@@ -9,6 +9,18 @@ interface LoginResponse {
   token: string;
 }
 
+export interface UpdateProfilePayload {
+  name: string;
+  email: string;
+  phone?: string | null;
+}
+
+export interface UpdatePasswordPayload {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
+}
+
 const TOKEN_KEY = 'koworkia_token';
 const USER_KEY = 'koworkia_user';
 
@@ -49,6 +61,23 @@ export class AuthService {
           this._user.set(user);
         }),
       );
+  }
+
+  /** Follows the same `user/profile-information` resource the initial fetch uses (Jetstream-style API convention). */
+  updateProfileInformation(payload: UpdateProfilePayload): Observable<User> {
+    return this.http
+      .put<ApiResource<User>>(`${environment.apiUrl}/user/profile-information`, payload)
+      .pipe(
+        map((res) => res.data),
+        tap((user) => {
+          localStorage.setItem(USER_KEY, JSON.stringify(user));
+          this._user.set(user);
+        }),
+      );
+  }
+
+  updatePassword(payload: UpdatePasswordPayload): Observable<void> {
+    return this.http.put<void>(`${environment.apiUrl}/user/password`, payload).pipe(map(() => void 0));
   }
 
   logout(): Observable<void> {

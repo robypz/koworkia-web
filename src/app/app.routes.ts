@@ -8,12 +8,60 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   /**
-   * No shell-level guard here: every remaining child (dashboard/spaces/
-   * members) already self-guards via `adminGuard` (which itself checks
-   * auth). A blanket guard on this parent would run for *any* `''`-rooted
-   * URL — including `/empresas/:id` and `/bookings`, which live in the
-   * sibling PublicShell branch below — and block anonymous/`user` access
-   * before the router ever gets a chance to fall through to that sibling.
+   * Public-facing shell: home and the company profile are public pages (no
+   * login required), while bookings/mis-reservas/perfil are where `user`-role
+   * members live day to day — none of this belongs in the internal admin
+   * dashboard, so all of it mounts under a plain top-nav layout instead of
+   * AdminShell's sidebar. This branch is listed *before* AdminShell: Angular
+   * matches a parent route as soon as its own path matches even if none of
+   * its children do (it doesn't require a child to "win" before activating
+   * the parent with an empty outlet), so for the bare `''` URL AdminShell
+   * would otherwise render itself with a blank body instead of ever falling
+   * through to this sibling. Listing this branch first means its own `''`
+   * child (Home) claims the root URL outright, and non-matching paths like
+   * `/dashboard` still fall through to AdminShell below as expected.
+   */
+  {
+    path: '',
+    loadComponent: () =>
+      import('./shared/layout/public-shell/public-shell').then((m) => m.PublicShell),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./features/home/home').then((m) => m.Home),
+      },
+      {
+        path: 'bookings',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/bookings/booking-grid/booking-grid').then((m) => m.BookingGrid),
+      },
+      {
+        path: 'mis-reservas',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/bookings/mis-reservas/mis-reservas').then((m) => m.MisReservas),
+      },
+      {
+        path: 'perfil',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+      },
+      {
+        path: 'empresas/:id',
+        loadComponent: () =>
+          import('./features/companies/company-profile/company-profile').then((m) => m.CompanyProfile),
+      },
+    ],
+  },
+  /**
+   * No shell-level guard here: every child (dashboard/spaces/members)
+   * already self-guards via `adminGuard` (which itself checks auth). A
+   * blanket guard on this parent would run for *any* `''`-rooted URL —
+   * including `/empresas/:id` and `/bookings`, which live in the sibling
+   * PublicShell branch above — and block anonymous/`user` access before the
+   * router ever gets a chance to try this branch.
    */
   {
     path: '',
@@ -36,33 +84,6 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./features/members/members-list/members-list').then((m) => m.MembersList),
-      },
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-    ],
-  },
-  /**
-   * Public-facing shell: the company profile is a public page (no login
-   * required), and bookings is where `user`-role members live day to day —
-   * neither belongs in the internal admin dashboard, so both mount under a
-   * plain top-nav layout instead of AdminShell's sidebar. Router falls back
-   * to this sibling `''` route whenever a URL doesn't match any AdminShell
-   * child (e.g. a non-admin bouncing off `adminGuard` into `/bookings`).
-   */
-  {
-    path: '',
-    loadComponent: () =>
-      import('./shared/layout/public-shell/public-shell').then((m) => m.PublicShell),
-    children: [
-      {
-        path: 'bookings',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/bookings/booking-grid/booking-grid').then((m) => m.BookingGrid),
-      },
-      {
-        path: 'empresas/:id',
-        loadComponent: () =>
-          import('./features/companies/company-profile/company-profile').then((m) => m.CompanyProfile),
       },
     ],
   },
