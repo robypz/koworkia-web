@@ -19,13 +19,24 @@
     No se encontró la empresa solicitada.
   </div>
 } @else {
-  <div class="mx-auto flex max-w-6xl flex-col gap-8">
+  <div class="mx-auto flex max-w-6xl flex-col gap-8" [style]="paletteVars()">
     <!-- Hero -->
     <div class="overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm">
-      <div class="h-28 bg-gradient-to-r from-primary to-primary-container sm:h-36"></div>
+      <div
+        class="h-28 sm:h-36"
+        [style.background]="
+          company()!.banner
+            ? 'center / cover no-repeat url(' + company()!.banner!.url + ')'
+            : 'linear-gradient(to right, var(--company-primary), var(--company-secondary))'
+        "
+      ></div>
       <div class="flex flex-col gap-4 px-6 pb-6 sm:flex-row sm:items-end sm:px-8">
-        <div class="-mt-10 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border-4 border-surface bg-surface-container-lowest shadow-md sm:h-24 sm:w-24">
-          <span class="material-symbols-outlined text-4xl text-primary">apartment</span>
+        <div class="-mt-10 flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border-4 border-surface bg-surface-container-lowest shadow-md sm:h-24 sm:w-24">
+          @if (company()!.logo) {
+            <img [src]="company()!.logo!.url" alt="Logo de {{ company()!.name }}" class="h-full w-full object-cover" />
+          } @else {
+            <span class="material-symbols-outlined text-4xl text-primary">apartment</span>
+          }
         </div>
         <div class="flex-1 pt-2 sm:pt-0">
           <h1 class="font-display text-2xl font-bold text-on-surface">{{ company()!.name }}</h1>
@@ -69,7 +80,7 @@
             <input
               type="text"
               placeholder="Buscar espacios..."
-              class="w-56 rounded-lg border border-surface-variant bg-white py-2 pr-3 pl-9 text-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              class="w-56 rounded-lg border border-surface-variant bg-white py-2 pr-3 pl-9 text-sm text-on-surface focus:border-[var(--company-primary)] focus:ring-1 focus:ring-[var(--company-primary)] focus:outline-none"
               [value]="query()"
               (input)="query.set($any($event.target).value)"
             />
@@ -85,7 +96,11 @@
             @for (space of filteredSpaces(); track space.id) {
               <div class="flex flex-col overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm transition-shadow hover:shadow-md">
                 <div class="flex h-32 items-center justify-center bg-surface-container-low">
-                  <span class="material-symbols-outlined text-4xl text-primary/60">{{ typeIcon[space.type] }}</span>
+                  <span
+                    class="material-symbols-outlined text-4xl opacity-60"
+                    [style.color]="'var(--company-primary)'"
+                    >{{ typeIcon[space.type] }}</span
+                  >
                 </div>
                 <div class="flex flex-1 flex-col gap-3 p-5">
                   <div class="flex items-start justify-between gap-2">
@@ -103,8 +118,8 @@
                   </div>
                   <button
                     type="button"
-                    class="mt-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-                    [class]="space.is_active ? 'bg-primary-container text-white hover:bg-primary-container/90' : 'cursor-not-allowed bg-surface-variant text-text-secondary'"
+                    class="mt-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-opacity"
+                    [class]="space.is_active ? 'bg-[var(--company-primary)] text-white hover:opacity-90' : 'cursor-not-allowed bg-surface-variant text-text-secondary'"
                     [disabled]="!space.is_active"
                     (click)="reservar(space)"
                   >

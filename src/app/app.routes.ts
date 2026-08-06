@@ -85,6 +85,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/members/members-list/members-list').then((m) => m.MembersList),
       },
+      {
+        path: 'mi-empresa',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/companies/company-identity/company-identity').then((m) => m.CompanyIdentity),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

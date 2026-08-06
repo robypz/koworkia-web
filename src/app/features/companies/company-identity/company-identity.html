@@ -1,0 +1,181 @@
+@if (loading()) {
+  <div class="flex items-center justify-center py-24 text-on-surface-variant">
+    <span class="material-symbols-outlined animate-spin text-3xl">progress_activity</span>
+  </div>
+} @else if (!company()) {
+  <div class="mx-auto max-w-xl px-6 py-24 text-center text-sm text-text-secondary">
+    No se encontró una empresa asociada a tu cuenta.
+  </div>
+} @else {
+  <div class="mx-auto flex max-w-5xl flex-col gap-6">
+    <div>
+      <h1 class="font-display text-2xl font-semibold text-on-surface sm:text-3xl">Mi Empresa</h1>
+      <p class="mt-1 text-sm text-text-secondary">
+        Configura el logo, el banner y la paleta de colores del perfil público de {{ company()!.name }}.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+      <!-- Form -->
+      <section class="rounded-lg border border-surface-variant bg-surface-container-lowest p-6 shadow-sm sm:p-8 lg:col-span-7">
+        <form class="flex flex-col gap-6" [formGroup]="form" (ngSubmit)="submit()">
+          <!-- Logo -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-on-surface-variant">Logo</label>
+            <div class="flex items-center gap-4">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-surface-variant bg-surface-container-low">
+                @if (logoPreview()) {
+                  <img [src]="logoPreview()" alt="Vista previa del logo" class="h-full w-full object-cover" />
+                } @else {
+                  <span class="material-symbols-outlined text-2xl text-on-surface-variant">apartment</span>
+                }
+              </div>
+              <label
+                class="cursor-pointer rounded-lg border border-outline-variant px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-low"
+              >
+                Elegir archivo
+                <input type="file" accept="image/png,image/jpeg" class="hidden" (change)="onLogoSelected($event)" />
+              </label>
+            </div>
+            <p class="text-xs text-text-secondary">PNG o JPG, máximo 2MB.</p>
+            @if (logoError()) {
+              <p class="text-xs text-error">{{ logoError() }}</p>
+            }
+          </div>
+
+          <!-- Banner -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-on-surface-variant">Banner</label>
+            <div class="h-24 w-full overflow-hidden rounded-lg border border-surface-variant bg-surface-container-low">
+              @if (bannerPreview()) {
+                <img [src]="bannerPreview()" alt="Vista previa del banner" class="h-full w-full object-cover" />
+              } @else {
+                <div class="flex h-full items-center justify-center text-xs text-text-secondary">Sin banner</div>
+              }
+            </div>
+            <label
+              class="w-fit cursor-pointer rounded-lg border border-outline-variant px-4 py-2 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-low"
+            >
+              Elegir archivo
+              <input type="file" accept="image/png,image/jpeg" class="hidden" (change)="onBannerSelected($event)" />
+            </label>
+            <p class="text-xs text-text-secondary">PNG o JPG, máximo 5MB.</p>
+            @if (bannerError()) {
+              <p class="text-xs text-error">{{ bannerError() }}</p>
+            }
+          </div>
+
+          <!-- Colors -->
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-medium text-on-surface-variant" for="primary_color">Color primario</label>
+              <div class="flex items-center gap-2">
+                <input
+                  type="color"
+                  class="h-10 w-12 shrink-0 cursor-pointer rounded-md border border-outline-variant"
+                  [value]="form.controls.primary_color.value"
+                  (input)="form.controls.primary_color.setValue($any($event.target).value)"
+                />
+                <input
+                  id="primary_color"
+                  type="text"
+                  formControlName="primary_color"
+                  placeholder="#1A2B3C"
+                  class="w-full rounded-lg border border-outline-variant px-4 py-2 text-sm text-on-surface transition-all focus:border-primary-container focus:ring-2 focus:ring-primary-container focus:outline-none"
+                />
+              </div>
+              @if (form.controls.primary_color.invalid && form.controls.primary_color.touched) {
+                <p class="mt-1 text-xs text-error">Introduce un color hexadecimal válido (ej. #1A2B3C).</p>
+              }
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-sm font-medium text-on-surface-variant" for="secondary_color">Color secundario</label>
+              <div class="flex items-center gap-2">
+                <input
+                  type="color"
+                  class="h-10 w-12 shrink-0 cursor-pointer rounded-md border border-outline-variant"
+                  [value]="form.controls.secondary_color.value"
+                  (input)="form.controls.secondary_color.setValue($any($event.target).value)"
+                />
+                <input
+                  id="secondary_color"
+                  type="text"
+                  formControlName="secondary_color"
+                  placeholder="#FFCC00"
+                  class="w-full rounded-lg border border-outline-variant px-4 py-2 text-sm text-on-surface transition-all focus:border-primary-container focus:ring-2 focus:ring-primary-container focus:outline-none"
+                />
+              </div>
+              @if (form.controls.secondary_color.invalid && form.controls.secondary_color.touched) {
+                <p class="mt-1 text-xs text-error">Introduce un color hexadecimal válido (ej. #FFCC00).</p>
+              }
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-end gap-3 border-t border-surface-variant pt-5">
+            <button
+              type="button"
+              (click)="togglePreview()"
+              class="flex items-center gap-2 rounded-lg border border-outline-variant px-6 py-2.5 text-sm font-medium text-on-surface transition-all hover:bg-surface-container-low active:scale-[0.98]"
+            >
+              <span class="material-symbols-outlined text-[18px]">visibility</span>
+              {{ previewing() ? 'Ocultar vista previa' : 'Vista previa' }}
+            </button>
+            <button
+              type="submit"
+              [disabled]="saving()"
+              class="flex items-center gap-2 rounded-lg bg-primary-container px-6 py-2.5 text-sm font-medium text-on-primary shadow-sm transition-all hover:bg-primary-container/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              @if (saving()) {
+                <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+              }
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Preview -->
+      <div class="flex flex-col gap-4 lg:col-span-5">
+        @if (previewing()) {
+          <div class="overflow-hidden rounded-xl border border-surface-variant bg-surface shadow-sm">
+            <div
+              class="h-24 sm:h-28"
+              [style.background]="bannerPreview() ? 'center / cover no-repeat url(' + bannerPreview() + ')' : 'linear-gradient(to right, ' + form.controls.primary_color.value + ', ' + form.controls.secondary_color.value + ')'"
+            ></div>
+            <div class="flex flex-col gap-3 px-5 pb-5">
+              <div class="-mt-8 flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border-4 border-surface bg-surface-container-lowest shadow-md">
+                @if (logoPreview()) {
+                  <img [src]="logoPreview()" alt="Logo" class="h-full w-full object-cover" />
+                } @else {
+                  <span class="material-symbols-outlined text-2xl text-primary">apartment</span>
+                }
+              </div>
+              <div>
+                <h3 class="font-display text-base font-semibold text-on-surface">{{ company()!.name }}</h3>
+                <p class="text-xs text-text-secondary">Así se verá tu perfil público.</p>
+              </div>
+              <div class="flex gap-2">
+                <span
+                  class="h-6 w-6 rounded-full border border-surface-variant"
+                  [style.background]="form.controls.primary_color.value"
+                ></span>
+                <span
+                  class="h-6 w-6 rounded-full border border-surface-variant"
+                  [style.background]="form.controls.secondary_color.value"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <p class="rounded-lg bg-surface-container-low px-4 py-3 text-xs text-text-secondary">
+            Esta es solo una previsualización: ningún cambio se ha guardado todavía.
+          </p>
+        } @else {
+          <div class="flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-surface-variant px-6 py-16 text-center text-sm text-text-secondary">
+            <span class="material-symbols-outlined text-3xl text-on-surface-variant">visibility</span>
+            Activa la vista previa para ver el resultado antes de guardar.
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

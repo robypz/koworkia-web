@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Puestos', icon: 'chair_alt', path: '/spaces', roles: ['root', 'admin'] },
   { label: 'Reservas', icon: 'calendar_today', path: '/bookings' },
   { label: 'Miembros', icon: 'group', path: '/members', roles: ['root'] },
+  { label: 'Mi Empresa', icon: 'palette', path: '/mi-empresa', roles: ['admin'] },
 ];
 
 const TITLES: { prefix: string; title: string }[] = [
@@ -27,6 +28,7 @@ const TITLES: { prefix: string; title: string }[] = [
   { prefix: '/spaces', title: 'Gestión de Espacios' },
   { prefix: '/members', title: 'Gestión de Miembros' },
   { prefix: '/bookings', title: 'Reservas' },
+  { prefix: '/mi-empresa', title: 'Mi Empresa' },
   { prefix: '/empresas', title: 'Perfil de la empresa' },
 ];
 

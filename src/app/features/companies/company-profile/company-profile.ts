@@ -47,6 +47,19 @@ export class CompanyProfile implements OnInit {
   protected readonly typeBadgeVariant = TYPE_BADGE_VARIANT;
   protected readonly typeIcon = TYPE_ICON;
 
+  /**
+   * Scoped CSS custom properties so the company's palette drives the hero,
+   * buttons and focus states on this page without touching the app's own
+   * global `--color-*` theme tokens used everywhere else.
+   */
+  protected readonly paletteVars = computed<Record<string, string>>(() => {
+    const palette = this.company()?.color_palette;
+    return {
+      '--company-primary': palette?.primary ?? 'var(--color-primary)',
+      '--company-secondary': palette?.secondary ?? 'var(--color-primary-container)',
+    };
+  });
+
   protected readonly filteredSpaces = computed(() => {
     const term = this.query().trim().toLowerCase();
     const list = this.spaces();
